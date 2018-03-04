@@ -57,25 +57,22 @@ require('should');
 // }
 
 
-function initChain() {
-  chain = new Blockchain(null, 'testnet');
-  return chain.initStore();
-}
-
 /* eslint no-underscore-dangle: ["error", { "allow": ["_getHash"] }] */
 
 
 describe('SPV-DASH (forks & re-orgs)', () => {
-  before(() => initChain());
+  before(() => {
+    headers = chainManager.fetchHeaders();
+    chain = new Blockchain(null, 'lowdiff');
+  });
 
   // save to disk to speedup
   it('should mine 5 test headers', () => {
-    headers = chainManager.fetchHeaders();
     headers.length.should.equal(5);
   });
 
-  it('should create a fork when adding header 0', () => {
-    chain.addHeader(headers[0]);
+  it('should create a fork of 1 (genesis block) when chain is initialised', () => {
+    // chain.addHeader(headers[0]);
     chain.forkedChains.length.should.equal(1);
   });
 
