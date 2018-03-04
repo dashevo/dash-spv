@@ -63,7 +63,7 @@ require('should');
 describe('SPV-DASH (forks & re-orgs)', () => {
   before(() => {
     headers = chainManager.fetchHeaders();
-    chain = new Blockchain(null, 'lowdiff');
+    chain = new Blockchain(null, 'testnet');
   });
 
   // save to disk to speedup
