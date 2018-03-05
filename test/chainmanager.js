@@ -1,34 +1,49 @@
-const utils = require('../lib/utils');
+/* eslint no-underscore-dangle: ["error", { "allow": ["_getHash"] }] */
+const DashUtil = require('dash-util');
+const bitcore = require('bitcore-lib-dash');
 
-function getNewBlock(prev, bits) {
-  return utils.createBlock(prev, parseInt(bits, 16));
+function validProofOfWork(header) {
+  const target = DashUtil.expandTarget(header.bits);
+  const hash = header._getHash().reverse();
+  return hash.compare(target) !== 1;
 }
 
-function generateHeaders(genesis) {
+function createBlock(prev, bits) {
+  let i = 0;
+  let header = null;
+  do {
+    header = new bitcore.BlockHeader({
+      version: 2,
+      prevHash: prev ? prev._getHash() : DashUtil.nullHash,
+      merkleRoot: DashUtil.nullHash,
+      time: prev ? (prev.time + 1) : Math.floor(Date.now() / 1000),
+      bits,
+      nonce: i++,
+    });
+  } while (!validProofOfWork(header));
+  return header;
+}
+
+const fetchHeaders = function fetchHeaders(genesis) {
   const blocks = [];
 
   // chain 1 block 1 - connects to genesis
-  blocks.push(getNewBlock(genesis, '1fffffff')); // 0
+  blocks.push(createBlock(genesis, '0x1fffffff')); // 0
 
   // chain 2 block 1 - connects to genesis
-  blocks.push(getNewBlock(genesis, '1fffff0d')); // 1
+  blocks.push(createBlock(genesis, '0x1fffff0d')); // 1
 
   // chain 2 block 2
-  blocks.push(getNewBlock(blocks[1], '1fffff0c')); // 2
+  blocks.push(createBlock(blocks[1], '0x1fffff0c')); // 2
 
   // chain 1 block 2
-  blocks.push(getNewBlock(blocks[0], '1ffffffd')); // 3
+  blocks.push(createBlock(blocks[0], '0x1ffffffd')); // 3
 
   // chain 2 block 3 - first matured block & cumalative difficulty higher than chain 1
   // thus the first block considered main chain
-  blocks.push(getNewBlock(blocks[2], '1fffff0b')); // 4
+  blocks.push(createBlock(blocks[2], '0x1fffff0b')); // 4
 
   return blocks;
-}
-
-
-module.exports = {
-  fetchHeaders() {
-    return generateHeaders();
-  },
 };
+
+module.exports = { fetchHeaders };
