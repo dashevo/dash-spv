@@ -1,5 +1,6 @@
 const Blockchain = require('../lib/spvchain');
 const chainManager = require('./chainmanager');
+const config = require('../config/config');
 
 let chain = null;
 let headers = [];
@@ -62,7 +63,7 @@ require('should');
 
 describe('SPV-DASH (forks & re-orgs)', () => {
   before(() => {
-    headers = chainManager.fetchHeaders();
+    headers = chainManager.fetchHeaders(config.getTestnetGenesis());
     chain = new Blockchain(null, 'testnet');
   });
 
@@ -72,7 +73,7 @@ describe('SPV-DASH (forks & re-orgs)', () => {
   });
 
   it('should create a fork of 1 (genesis block) when chain is initialised', () => {
-    // chain.addHeader(headers[0]);
+    chain.addHeader(headers[0]);
     chain.forkedChains.length.should.equal(1);
   });
 

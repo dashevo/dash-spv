@@ -1,19 +1,17 @@
 const utils = require('../lib/utils');
-const config = require('../config/config');
-
 
 function getNewBlock(prev, bits) {
   return utils.createBlock(prev, parseInt(bits, 16));
 }
 
-function generateHeaders() {
+function generateHeaders(genesis) {
   const blocks = [];
 
   // chain 1 block 1 - connects to genesis
-  blocks.push(getNewBlock(config.getLowDiffGenesis(), '1fffffff')); // 0
+  blocks.push(getNewBlock(genesis, '1fffffff')); // 0
 
   // chain 2 block 1 - connects to genesis
-  blocks.push(getNewBlock(config.getLowDiffGenesis(), '1fffff0d')); // 1
+  blocks.push(getNewBlock(genesis, '1fffff0d')); // 1
 
   // chain 2 block 2
   blocks.push(getNewBlock(blocks[1], '1fffff0c')); // 2
