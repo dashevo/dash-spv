@@ -18,7 +18,7 @@ function createBlock(prev, bits) {
       merkleRoot: DashUtil.nullHash,
       time: prev ? (prev.time + 1) : Math.floor(Date.now() / 1000),
       bits,
-      nonce: i++,
+      nonce: i += 1,
     });
   } while (!validProofOfWork(header));
   return header;
