@@ -1,8 +1,7 @@
-// const Blockchain = require('../lib/spvchain');
+const Blockchain = require('../lib/spvchain');
 const chainManager = require('./chainmanager');
-const config = require('../config/config');
 
-// let chain = null;
+let chain = null;
 let headers = [];
 require('should');
 
@@ -61,36 +60,34 @@ require('should');
 // }
 
 
-/* eslint no-underscore-dangle: ["error", { "allow": ["_getHash"] }] */
-
-
 describe('SPV-DASH (forks & re-orgs)', () => {
   before(() => {
-    headers = chainManager.fetchHeaders(config.getTestnetGenesis());
-    // chain = new Blockchain(null, 'testnet');
+    headers = chainManager.fetchHeaders();
+    chain = new Blockchain(null, 'testnet');
   });
 
-  it('should mine 5 test headers', () => {
-    headers.length.should.equal(5);
+  it('should get 25 testnet headers', () => {
+    headers.length.should.equal(25);
   });
 
-  // Temp removal of tests now failing due to the higher difficulty requirements
-  // now introduced by the new DGW target as part of SPV consensus rules
-  // it('should create a fork of 1 (genesis block) when chain is initialised', () => {
-  //   chain.addHeader(headers[0]);
-  //   chain.forkedChains.length.should.equal(1);
-  // });
+  it('should contain no forks when chain is initialised with genesis block', () => {
+    chain.forkedChains.length.should.equal(0);
+  });
 
-  // it('should create a second fork when adding header 1', () => {
-  //   chain.addHeader(headers[1]);
-  //   chain.forkedChains.length.should.equal(2);
-  // });
+  it('should contain genesis hash', () => {
+    chain.getTipHash().should.equal('00000bafbc94add76cb75e2ec92894837288a481e5c005f6563d91623bf8bc2c');
+  });
 
-  // it('should have 4 total blocks on chain 2', () => {
-  //   chain.addHeaders(headers.slice(2, 5));
-  //   // genesis block + 1 matured block + 2 forked/pending blocks
-  //   chain.getChainHeight().should.equal(4);
-  // });
+  it('should contain a fork of 1 when first header is added', () => {
+    chain.addHeader(headers[0]);
+    chain.forkedChains.length.should.equal(1);
+  });
+
+  it('should contain correct tip and height when remaining headers [1..24] is added', () => {
+    headers.shift();
+    chain.addHeaders(headers);
+    chain.getChainHeight().should.equal(26);
+  });
 });
 
 describe('SPV-DASH (merkle proofs)', () => {
