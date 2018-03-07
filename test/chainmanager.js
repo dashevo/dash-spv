@@ -207,8 +207,6 @@ const headers = [
   },
 ];
 
-const fetchHeaders = function fetchHeaders() {
-  return headers.map(h => utils.normalizeHeader(h));
-};
+const fetchHeaders = () => headers.map(h => utils.normalizeHeader(h));
 
 module.exports = { fetchHeaders };
