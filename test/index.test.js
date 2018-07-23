@@ -26,7 +26,7 @@ describe('SPV-DASH (forks & re-orgs)', () => {
 
   it('should still contain a fork of 1 when first header is added', () => {
     chain.addHeader(headers[0]);
-    chain.forkedChains.length.should.equal(1);
+    chain.length.should.equal(1);
   });
 
   it('should contain correct tip and height when remaining headers [1..24] is added', () => {
