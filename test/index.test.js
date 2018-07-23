@@ -17,7 +17,7 @@ describe('SPV-DASH (forks & re-orgs)', () => {
   });
 
   it('should contain 1 fork when chain is initialised with genesis block', () => {
-    chain.forkedChains.length.should.equal(1);
+    chain.getAllBranches().length.should.equal(1);
   });
 
   it('should contain genesis hash', () => {
@@ -26,13 +26,7 @@ describe('SPV-DASH (forks & re-orgs)', () => {
 
   it('should still contain a fork of 1 when first header is added', () => {
     chain.addHeader(headers[0]);
-    chain.length.should.equal(1);
-  });
-
-  it('should contain correct tip and height when remaining headers [1..24] is added', () => {
-    headers.shift();
-    chain.addHeaders(headers);
-    chain.getChainHeight().should.equal(25);
+    chain.getAllBranches().length.should.equal(1);
   });
 });
 
