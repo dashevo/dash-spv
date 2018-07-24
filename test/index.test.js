@@ -94,6 +94,11 @@ describe('Blockstore', () => {
   });
 });
 
+// TODO:
+// Create scenarios where chain splits occur to form competing brances
+// Difficult with current chain provided by chainmanager as this is actual hardcoded
+// Dash testnet headers which requires significant CPU power to create forked chains from
+
 describe('Difficulty Calculation', () => {
   it('should have difficulty of 1 when target is max', () => {
     const testnetMaxTarget = 0x1e0ffff0;
