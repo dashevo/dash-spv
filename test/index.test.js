@@ -31,6 +31,12 @@ describe('SPV-DASH (forks & re-orgs)', () => {
     chain.getLongestChain().length.should.equal(2);
   });
 
+  it('should discard addding of duplicate block', () => {
+    chain.addHeader(headers[0]);
+    chain.getOrphans().length.should.equal(0);
+    chain.getLongestChain().length.should.equal(2);
+  });
+
   it('create 1 orphan', () => {
     chain.addHeader(headers[2]);
     chain.getOrphans().length.should.equal(1);
