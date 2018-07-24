@@ -12,8 +12,8 @@ describe('SPV-DASH (forks & re-orgs)', () => {
     chain = new Blockchain('testnet');
   });
 
-  it('should get 25 testnet headers', () => {
-    headers.length.should.equal(25);
+  it('should get 26 testnet headers', () => {
+    headers.length.should.equal(26);
   });
 
   it('should contain 1 branch when chain is initialised with genesis block', () => {
@@ -48,6 +48,11 @@ describe('SPV-DASH (forks & re-orgs)', () => {
     chain.addHeaders(headers.slice(3));
     chain.getOrphans().length.should.equal(0);
     chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(26);
+  });
+
+  it('not add an invalid header', () => {
+    chain.addHeader(headers[25]);
     chain.getLongestChain().length.should.equal(26);
   });
 });
