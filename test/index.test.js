@@ -63,6 +63,37 @@ describe('SPV-DASH (forks & re-orgs)', () => {
   });
 });
 
+let genesisHash = null;
+describe('Blockstore', () => {
+  before(() => {
+    headers = chainManager.fetchHeaders();
+    chain = new Blockchain('testnet', 10);
+    genesisHash = chain.getTipHash();
+  });
+
+  it('should add 9 headers', (done) => {
+    chain.addHeaders(headers.slice(0, 9));
+    chain.getLongestChain().length.should.equal(10);
+    chain.getHeader(genesisHash)
+      .then((header) => {
+        header.hash.should.equal(genesisHash);
+        header.should.have.property('children');
+        done();
+      });
+  });
+
+  it('should move 1 block to  the blockstore', (done) => {
+    chain.addHeaders(headers.slice(9, 10));
+    chain.getLongestChain().length.should.equal(10);
+    chain.getHeader(genesisHash)
+      .then((header) => {
+        header.hash.should.equal(genesisHash);
+        header.should.not.have.property('children');
+        done();
+      });
+  });
+});
+
 describe('Difficulty Calculation', () => {
   it('should have difficulty of 1 when target is max', () => {
     const testnetMaxTarget = 0x1e0ffff0;
