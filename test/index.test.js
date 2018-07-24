@@ -43,6 +43,13 @@ describe('SPV-DASH (forks & re-orgs)', () => {
     chain.getAllBranches().length.should.equal(1);
     chain.getLongestChain().length.should.equal(4);
   });
+
+  it('add remaining test headers', () => {
+    chain.addHeaders(headers.slice(3));
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(26);
+  });
 });
 
 describe('Difficulty Calculation', () => {
