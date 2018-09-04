@@ -1,9 +1,11 @@
 const Blockchain = require('../lib/spvchain');
-const headers = require('./data/headers');
 const utils = require('../lib/utils');
-const merkleData = require('./data/merkleproofs');
 const merkleProofs = require('../lib/merkleproofs');
-const dashcore = require('bitcore-lib-dash');
+const dashcore = require('@dashevo/dashcore-lib');
+
+const headers = require('./data/headers');
+const merkleData = require('./data/merkleproofs');
+const mnListDiff = require('./data/mnlistdiff');
 
 let chain = null;
 require('should');
@@ -141,5 +143,12 @@ describe('MerkleProofs', () => {
       mnProof.numTransactions,
       invalidTx,
     ).should.equal(false);
+  });
+});
+
+describe('MnList Merkleroot validation', () => {
+  it('should validate correct mnlistmerkleroot', () => {
+    merkleProofs.validateMnListMerkleRoot(mnListDiff.merkleRootMNList, mnListDiff.mnList)
+      .should.equal(true);
   });
 });
