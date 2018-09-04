@@ -1,5 +1,4 @@
 const Blockchain = require('../lib/spvchain');
-<<<<<<< HEAD
 const utils = require('../lib/utils');
 const merkleProofs = require('../lib/merkleproofs');
 const dashcore = require('@dashevo/dashcore-lib');
@@ -7,13 +6,6 @@ const dashcore = require('@dashevo/dashcore-lib');
 const headers = require('./data/headers');
 const merkleData = require('./data/merkleproofs');
 const mnListDiff = require('./data/mnlistdiff');
-=======
-const headers = require('./data/headers');
-const utils = require('../lib/utils');
-const merkleData = require('./data/merkleproofs');
-const merkleProofs = require('../lib/merkleproofs');
-const dashcore = require('bitcore-lib-dash');
->>>>>>> 98258a0d2b87af7fc717aad5e4711bba709b7d6d
 
 let chain = null;
 require('should');
