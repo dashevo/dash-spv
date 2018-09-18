@@ -11,7 +11,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@dashevo/dashcore-lib": "git+ssh://git@github.com/dashevo/dashcore-lib.git#evo",
+    "@dashevo/dashcore-lib": "git+ssh://git@github.com/dashevo/dashcore-lib.git#feat/merklerootmnlist",
     "bitcoin-merkle-proof": "^0.1.0",
     "bitcore-p2p-dash": "^1.1.4",
     "bn.js": "^4.11.8",
