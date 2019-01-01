@@ -1,13 +1,14 @@
-const DashUtil = require('@dashevo/dash-util');
 const utils = require('../lib/utils');
+
+const zeroHashStr = '0000000000000000000000000000000000000000000000000000000000000000';
 
 module.exports = {
   getLowDiffGenesis() {
     // Custom genesis to test with lower difficulty
     return utils.normalizeHeader({
       version: 1,
-      previousblockhash: '0000000000000000000000000000000000000000000000000000000000000000',
-      merkleroot: DashUtil.nullHash.toString('hex'),
+      previousblockhash: zeroHashStr,
+      merkleroot: zeroHashStr,
       time: 1504510163,
       bits: '1fffffff',
       nonce: 2307,
@@ -17,7 +18,7 @@ module.exports = {
     // Custom genesis to test with lower difficulty
     return utils.normalizeHeader({
       version: 1,
-      previousblockhash: '0000000000000000000000000000000000000000000000000000000000000000',
+      previousblockhash: zeroHashStr,
       merkleroot: 'e0028eb9648db56b1ac77cf090b99048a8007e2bb64b68f092c03c7f56a662c7',
       time: 1390666206,
       bits: '1e0ffff0',
