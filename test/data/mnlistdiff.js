@@ -30,4 +30,3 @@ const mnListDiff = {
 };
 
 module.exports = mnListDiff;
-
