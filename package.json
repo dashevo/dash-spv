@@ -16,7 +16,6 @@
     "@dashevo/dash-util": "^2.0.3",
     "bitcoin-merkle-proof": "^0.1.0",
     "bn.js": "^4.11.8",
-    "inherits": "^2.0.3",
     "levelup": "^4.0.0",
     "memdown": "^3.0.0"
   },
