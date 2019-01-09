@@ -1,7 +1,7 @@
 {
   "name": "@dashevo/dash-spv",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "Temporary repo until spv functions moved into dashcore-lib",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/ --no-timeouts --recursive",
@@ -11,20 +11,18 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "bitcoin-merkle-proof": "^0.1.0",
-    "bitcore-lib-dash": "^0.14.3",
-    "bitcore-p2p-dash": "^1.1.4",
-    "dark-gravity-wave-js": "git+https://github.com/dashevo/dark-gravity-wave-js.git#develop",
-    "dash-util": "^2.0.3",
-    "inherits": "^2.0.1",
-    "levelup": "^2.0.2",
-    "memdown": "^2.0.0"
+    "@dashevo/dark-gravity-wave": "^1.0.1",
+    "@dashevo/dashcore-lib": "^0.16.1",
+    "@dashevo/dash-util": "^2.0.3",
+    "bn.js": "^4.11.8",
+    "levelup": "^4.0.0",
+    "memdown": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^4.18.2",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.9.0",
-    "mocha": "^3.5.3",
-    "should": "^13.2.1"
+    "eslint": "^5.12.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "mocha": "^5.2.0",
+    "should": "^13.2.3"
   }
 }
