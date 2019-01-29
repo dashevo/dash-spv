@@ -1,10 +1,14 @@
-os: linux
+sudo: false
+dist: trusty
 language: node_js
+
+# Support Active LTS versions of Node.js
 node_js:
   - '8'
+  - '10'
+
 install:
   - npm install
-before_install:
-  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
+
 before_script:
   - npm run lint
