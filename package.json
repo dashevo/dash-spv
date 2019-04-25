@@ -15,13 +15,13 @@
     "@dashevo/dashcore-lib": "^0.17.3",
     "@dashevo/dash-util": "^2.0.3",
     "bn.js": "^4.11.8",
-    "levelup": "^4.0.0",
+    "levelup": "^4.0.1",
     "memdown": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^5.12.0",
+    "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-import": "^2.17.2",
     "mocha": "^5.2.0",
     "should": "^13.2.3"
   }
