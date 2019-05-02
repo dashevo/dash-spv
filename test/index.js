@@ -5,8 +5,6 @@ const merkleProofs = require('../lib/merkleproofs');
 
 const headers = require('./data/headers');
 const merkleData = require('./data/merkleproofs');
-// disable for now until dashcore-lib can parse it
-// const mnListDiff = require('./data/mnlistdiff');
 
 let chain = null;
 require('should');
@@ -146,17 +144,3 @@ describe('MerkleProofs', () => {
     ).should.equal(false);
   });
 });
-/*
-describe('MnList Merkleroot validation', () => {
-  it('should validate correct mnlistmerkleroot', () => {
-    // not working yet
-    merkleProofs.validateMnListMerkleRoot(mnListDiff.merkleRootMNList, mnListDiff.mnList)
-      .should.equal(true);
-  });
-  it('should invalidate incorrect mnlistmerkleroot', () => {
-    const randommerkleroot = '1dbb061b19bdcd582b50fae5a29c857e34058d23db79e6defdc8a3498cc29691';
-    merkleProofs.validateMnListMerkleRoot(randommerkleroot, mnListDiff.mnList)
-      .should.equal(false);
-  });
-});
-*/
