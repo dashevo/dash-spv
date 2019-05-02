@@ -4,6 +4,7 @@ const utils = require('../lib/utils');
 const merkleProofs = require('../lib/merkleproofs');
 
 const headers = require('./data/headers');
+const rawheaders = require('./data/rawheaders');
 const merkleData = require('./data/merkleproofs');
 
 let chain = null;
