@@ -2,15 +2,18 @@ const dashcore = require('@dashevo/dashcore-lib');
 const Blockchain = require('../lib/spvchain');
 const utils = require('../lib/utils');
 const merkleProofs = require('../lib/merkleproofs');
-
+const consensus = require('../lib/consensus');
 const headers = require('./data/headers');
-const rawheaders = require('./data/rawheaders');
+const {
+  mainnet, mainnet2, badRawHeaders, getHeaderChunks,
+} = require('./data/rawHeaders');
 const merkleData = require('./data/merkleproofs');
+
 
 let chain = null;
 require('should');
 
-describe('SPV-DASH (forks & re-orgs)', () => {
+describe('SPV-DASH (forks & re-orgs) deserialized headers', () => {
   before(() => {
     chain = new Blockchain('testnet');
   });
@@ -66,6 +69,62 @@ describe('SPV-DASH (forks & re-orgs)', () => {
   });
 });
 
+describe('SPV-DASH (forks & re-orgs) serialized raw headers', () => {
+  before(() => {
+    chain = new Blockchain('test', 100, utils.normalizeHeader(mainnet[0]));
+  });
+
+  it('should get 2000 mainnet headers', () => {
+    mainnet.length.should.equal(2000);
+  });
+
+  it('should contain 1 branch when chain is initialised with genesis block', () => {
+    chain.getAllBranches().length.should.equal(1);
+  });
+
+  it('should contain start hash', () => {
+    chain.getTipHash().should.equal('000000000000002b8a8363ce87b4c48087ff8a997a8102097102bed001ebc531');
+    chain.getLongestChain().length.should.equal(1);
+  });
+
+  it('should still contain a branch of 1 when first header is added', () => {
+    chain.addHeader(mainnet[1]);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(2);
+  });
+
+  it('should discard addding of duplicate block', () => {
+    chain.addHeader(mainnet[1]);
+    chain.getOrphans().length.should.equal(0);
+    chain.getLongestChain().length.should.equal(2);
+  });
+
+  it('create 1 orphan', () => {
+    chain.addHeader(mainnet[3]);
+    chain.getOrphans().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(2);
+  });
+
+  it('connect the orphan by adding its parent', () => {
+    chain.addHeader(mainnet[2]);
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(4);
+  });
+
+  it('add remaining test headers', () => {
+    chain.addHeaders(mainnet.slice(3, 26));
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(24);
+  });
+
+  it('not add an invalid header', () => {
+    chain.addHeader(mainnet[499]);
+    chain.getLongestChain().length.should.equal(24);
+  });
+});
+
 let genesisHash = null;
 describe('Blockstore', () => {
   before(() => {
@@ -97,7 +156,7 @@ describe('Blockstore', () => {
 });
 
 // TODO:
-// Create scenarios where chain splits occur to form competing brances
+// Create scenarios where chain splits occur to form competing branches
 // Difficult with current chain provided by chainmanager as this is actual hardcoded
 // Dash testnet headers which requires significant CPU power to create forked chains from
 
@@ -143,5 +202,47 @@ describe('MerkleProofs', () => {
       mnProof.numTransactions,
       invalidTx,
     ).should.equal(false);
+  });
+});
+
+describe('Headerchain Sync Validation', () => {
+  it('should get 500 good raw headers', () => {
+    mainnet2.length.should.equal(2000);
+  });
+
+  it('should get bad raw headers', () => {
+    badRawHeaders.length.should.equal(4);
+  });
+
+  it('should build header chunks', () => {
+    const chunks = getHeaderChunks(mainnet2);
+    chunks.length.should.equal(50);
+    chunks[0].items.length.should.equal(40);
+  });
+
+  it('should validate a good header chunk', async () => {
+    const { valid, badHeaders } = await consensus.validateHeaderChunk(mainnet2);
+    valid.should.equal(true);
+    badHeaders.length.should.equal(0);
+  });
+
+  it('should reject and identify a bad header chunk', async () => {
+    const { valid, badHeaders } = await consensus.validateHeaderChunk(badRawHeaders);
+    valid.should.equal(false);
+    badHeaders.length.should.be.greaterThan(0);
+  });
+
+  it('should validate good header chunks', () => {
+    const chunks = getHeaderChunks(mainnet2);
+    const { valid, badChunks } = consensus.validateHeaderChunks(chunks);
+    valid.should.equal(true);
+    badChunks.length.should.equal(0);
+  });
+
+  it('should reject and identify bad header chunks', () => {
+    const badHeaderChunks = getHeaderChunks(badRawHeaders);
+    const { valid, badChunks } = consensus.validateHeaderChunks(badHeaderChunks);
+    valid.should.equal(false);
+    badChunks.length.should.be.greaterThan(0);
   });
 });
