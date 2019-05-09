@@ -65,6 +65,16 @@ describe('SPV-DASH (forks & re-orgs)', () => {
     chain.addHeader(headers[25]);
     chain.getLongestChain().length.should.equal(26);
   });
+
+  it('should throw an error if some of the headers is invalid', (done) => {
+    try {
+      chain.addHeaders([headers[25], headers[10]]);
+      done(new Error('SPV chain failed to throw an error on invalid block'));
+    } catch (e) {
+      e.message.should.equal('Some headers are invalid');
+      done();
+    }
+  });
 });
 
 let genesisHash = null;
