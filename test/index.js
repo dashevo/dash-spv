@@ -55,7 +55,7 @@ describe('SPV-DASH (forks & re-orgs)', () => {
   });
 
   it('add remaining test headers', () => {
-    chain.addHeaders(headers.slice(3));
+    chain.addHeaders(headers.slice(3, 25));
     chain.getOrphans().length.should.equal(0);
     chain.getAllBranches().length.should.equal(1);
     chain.getLongestChain().length.should.equal(26);
