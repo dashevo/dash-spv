@@ -32,7 +32,7 @@ describe('SPV-DASH (forks & re-orgs)', () => {
     chain.getLongestChain().length.should.equal(2);
   });
 
-  it('should discard addding of duplicate block', () => {
+  it('should discard adding of duplicate block', () => {
     chain.addHeader(headers[0]);
     chain.getOrphans().length.should.equal(0);
     chain.getLongestChain().length.should.equal(2);
@@ -92,7 +92,7 @@ describe('Blockstore', () => {
       });
   });
 
-  it('should move 1 block to  the blockstore', (done) => {
+  it('should move 1 block to the blockstore', (done) => {
     chain.addHeaders(headers.slice(9, 10));
     chain.getLongestChain().length.should.equal(10);
     chain.getHeader(genesisHash)
