@@ -1,12 +1,9 @@
 const dashcore = require('@dashevo/dashcore-lib');
 const Blockchain = require('../lib/spvchain');
-const utils = require('../lib/utils');
 const merkleProofs = require('../lib/merkleproofs');
 
 const headers = require('./data/headers');
 const merkleData = require('./data/merkleproofs');
-// disable for now until dashcore-lib can parse it
-// const mnListDiff = require('./data/mnlistdiff');
 
 let chain = null;
 require('should');
@@ -112,18 +109,6 @@ describe('Blockstore', () => {
 // Difficult with current chain provided by chainmanager as this is actual hardcoded
 // Dash testnet headers which requires significant CPU power to create forked chains from
 
-describe('Difficulty Calculation', () => {
-  it('should have difficulty of 1 when target is max', () => {
-    const testnetMaxTarget = 0x1e0ffff0;
-    utils.getDifficulty(testnetMaxTarget).should.equal(1);
-  });
-
-  it('should have difficulty higher than 1 when target is lower than max', () => {
-    const testnetMaxTarget = 0x1e0fffef;
-    utils.getDifficulty(testnetMaxTarget).should.be.greaterThan(1);
-  });
-});
-
 describe('MerkleProofs', () => {
   it('should validate tx inclusion in merkleblock', () => {
     const merkleBlock = new dashcore.MerkleBlock(merkleData.merkleBlock);
@@ -132,27 +117,5 @@ describe('MerkleProofs', () => {
 
     merkleProofs.validateTxProofs(merkleBlock, [validTx]).should.equal(true);
     merkleProofs.validateTxProofs(merkleBlock, [invalidTx]).should.equal(false);
-  });
-
-  it('validate tx by constucting new merkleblock (mnlistdiffs)', () => {
-    const { mnProof } = merkleData;
-    const validTx = '45afbfe270014d5593cb065562f1fed726f767fe334d8b3f4379025cfa5be8c5';
-    const invalidTx = `${validTx.substring(0, validTx.length - 1)}0`;
-
-    merkleProofs.validateMnProofs(
-      mnProof.header,
-      mnProof.flags,
-      mnProof.hashes,
-      mnProof.numTransactions,
-      validTx,
-    ).should.equal(true);
-
-    merkleProofs.validateMnProofs(
-      mnProof.header,
-      mnProof.flags,
-      mnProof.hashes,
-      mnProof.numTransactions,
-      invalidTx,
-    ).should.equal(false);
   });
 });
