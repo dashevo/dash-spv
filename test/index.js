@@ -4,7 +4,7 @@ const utils = require('../lib/utils');
 const merkleProofs = require('../lib/merkleproofs');
 
 const {
-  mainnet, mainnet2, badRawHeaders,
+  mainnet, badRawHeaders,
 } = require('./data/rawHeaders');
 const headers = require('./data/headers');
 const merkleData = require('./data/merkleproofs');
@@ -80,7 +80,7 @@ describe('SPV-DASH (forks & re-orgs) deserialized headers', () => {
 
 describe('SPV-DASH (forks & re-orgs) serialized raw headers', () => {
   before(() => {
-    chain = new Blockchain('test', 100, utils.normalizeHeader(mainnet[0]));
+    chain = new Blockchain('test', 10000, utils.normalizeHeader(mainnet[0]));
   });
 
   it('should get 2000 mainnet headers', () => {
@@ -122,15 +122,15 @@ describe('SPV-DASH (forks & re-orgs) serialized raw headers', () => {
   });
 
   it('add remaining mainnet headers', () => {
-    chain.addHeaders(mainnet.slice(3, 1999));
+    chain.addHeaders(mainnet.slice(3, 500));
     chain.getOrphans().length.should.equal(0);
     chain.getAllBranches().length.should.equal(1);
-    chain.getLongestChain().length.should.equal(24);
+    chain.getLongestChain().length.should.equal(500);
   });
 
   it('not add an invalid header', () => {
     chain.addHeader(mainnet[499]);
-    chain.getLongestChain().length.should.equal(24);
+    chain.getLongestChain().length.should.equal(500);
   });
 
   it('should throw an error if some of the headers is invalid', (done) => {
