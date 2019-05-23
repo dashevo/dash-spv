@@ -189,7 +189,7 @@ describe('SPV-DASH (addHeaders) add many headers for testnet', () => {
     }
   });
 });
-/*
+
 describe('SPV-DASH (addHeaders) add many headers for mainnet', () => {
   before(() => {
     chain = new Blockchain('mainnet', 10000, utils.normalizeHeader(mainnet[0]));
@@ -231,7 +231,7 @@ describe('SPV-DASH (addHeaders) add many headers for mainnet', () => {
     }
   });
 });
-*/
+
 let genesisHash = null;
 describe('Blockstore', () => {
   before(() => {
