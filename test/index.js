@@ -4,7 +4,7 @@ const utils = require('../lib/utils');
 const merkleProofs = require('../lib/merkleproofs');
 
 const {
-  mainnet, badRawHeaders,
+  testnet, mainnet, badRawHeaders,
 } = require('./data/rawHeaders');
 const headers = require('./data/headers');
 const merkleData = require('./data/merkleproofs');
@@ -122,6 +122,41 @@ describe('SPV-DASH (forks & re-orgs) serialized raw headers for mainnet', () => 
   });
 });
 
+describe('SPV-DASH (addHeaders) add many headers for testnet', () => {
+  before(() => {
+    chain = new Blockchain('mainnet', 10000, utils.normalizeHeader(testnet[0]));
+  });
+
+  it('should add the 1st 250 mainnet headers', () => {
+    chain.addHeaders(testnet.slice(1, 250));
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(500);
+  });
+
+  it('should add the next 250 (250 - 500) mainnet headers', () => {
+    chain.addHeaders(testnet.slice(250, 499));
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(499);
+  });
+
+  it('should not add an invalid header', () => {
+    chain.addHeader(testnet[499]);
+    chain.getLongestChain().length.should.equal(499);
+  });
+
+  it('should throw an error if some of the headers is invalid', (done) => {
+    try {
+      chain.addHeaders([badRawHeaders[0], badRawHeaders[1]]);
+      done(new Error('SPV chain failed to throw an error on invalid block'));
+    } catch (e) {
+      e.message.should.equal('Some headers are invalid');
+      done();
+    }
+  });
+});
+/*
 describe('SPV-DASH (addHeaders) add many headers for mainnet', () => {
   before(() => {
     chain = new Blockchain('mainnet', 10000, utils.normalizeHeader(mainnet[0]));
@@ -163,7 +198,7 @@ describe('SPV-DASH (addHeaders) add many headers for mainnet', () => {
     }
   });
 });
-
+*/
 let genesisHash = null;
 describe('Blockstore', () => {
   before(() => {
