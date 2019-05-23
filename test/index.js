@@ -42,20 +42,20 @@ describe('SPV-DASH (forks & re-orgs) deserialized headers', () => {
     chain.getLongestChain().length.should.equal(2);
   });
 
-  it('create 1 orphan', () => {
+  it('should create 1 orphan', () => {
     chain.addHeader(headers[2]);
     chain.getOrphans().length.should.equal(1);
     chain.getLongestChain().length.should.equal(2);
   });
 
-  it('connect the orphan by adding its parent', () => {
+  it('should connect the orphan by adding its parent', () => {
     chain.addHeader(headers[1]);
     chain.getOrphans().length.should.equal(0);
     chain.getAllBranches().length.should.equal(1);
     chain.getLongestChain().length.should.equal(4);
   });
 
-  it('add remaining test headers', () => {
+  it('should add remaining test headers', () => {
     chain.addHeaders(headers.slice(3, 24));
     chain.getOrphans().length.should.equal(0);
     chain.getAllBranches().length.should.equal(1);
@@ -78,9 +78,9 @@ describe('SPV-DASH (forks & re-orgs) deserialized headers', () => {
   });
 });
 
-describe('SPV-DASH (forks & re-orgs) serialized raw headers', () => {
+describe('SPV-DASH (forks & re-orgs) serialized raw headers for mainnet', () => {
   before(() => {
-    chain = new Blockchain('test', 10000, utils.normalizeHeader(mainnet[0]));
+    chain = new Blockchain('mainnet', 10000, utils.normalizeHeader(mainnet[0]));
   });
 
   it('should get 2000 mainnet headers', () => {
@@ -108,29 +108,49 @@ describe('SPV-DASH (forks & re-orgs) serialized raw headers', () => {
     chain.getLongestChain().length.should.equal(2);
   });
 
-  it('create 1 orphan', () => {
+  it('should create 1 orphan', () => {
     chain.addHeader(mainnet[3]);
     chain.getOrphans().length.should.equal(1);
     chain.getLongestChain().length.should.equal(2);
   });
 
-  it('connect the orphan by adding its parent', () => {
+  it('should connect the orphan by adding its parent', () => {
     chain.addHeader(mainnet[2]);
     chain.getOrphans().length.should.equal(0);
     chain.getAllBranches().length.should.equal(1);
     chain.getLongestChain().length.should.equal(4);
   });
+});
 
-  it('add remaining mainnet headers', () => {
-    chain.addHeaders(mainnet.slice(3, 500));
+describe('SPV-DASH (addHeaders) add many headers for mainnet', () => {
+  before(() => {
+    chain = new Blockchain('mainnet', 10000, utils.normalizeHeader(mainnet[0]));
+  });
+
+  it('should add the 1st 500 mainnet headers', () => {
+    chain.addHeaders(mainnet.slice(1, 500));
     chain.getOrphans().length.should.equal(0);
     chain.getAllBranches().length.should.equal(1);
     chain.getLongestChain().length.should.equal(500);
   });
 
-  it('not add an invalid header', () => {
+  it('should add the next 500 (500 - 1000) mainnet headers', () => {
+    chain.addHeaders(mainnet.slice(500, 1000));
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(1000);
+  });
+
+  it('should add the next 500 (1000 - 1500) mainnet headers', () => {
+    chain.addHeaders(mainnet.slice(1000, 1500));
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(1500);
+  });
+
+  it('should not add an invalid header', () => {
     chain.addHeader(mainnet[499]);
-    chain.getLongestChain().length.should.equal(500);
+    chain.getLongestChain().length.should.equal(1500);
   });
 
   it('should throw an error if some of the headers is invalid', (done) => {
