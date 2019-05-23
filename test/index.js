@@ -1,16 +1,20 @@
 const dashcore = require('@dashevo/dashcore-lib');
 const Blockchain = require('../lib/spvchain');
+const utils = require('../lib/utils');
 const merkleProofs = require('../lib/merkleproofs');
 
+const {
+  mainnet, mainnet2, badRawHeaders,
+} = require('./data/rawHeaders');
 const headers = require('./data/headers');
 const merkleData = require('./data/merkleproofs');
 
 let chain = null;
 require('should');
 
-describe('SPV-DASH (forks & re-orgs)', () => {
+describe('SPV-DASH (forks & re-orgs) deserialized headers', () => {
   before(() => {
-    chain = new Blockchain('testnet');
+    chain = new Blockchain('devnet');
   });
 
   it('should get 26 testnet headers', () => {
@@ -52,20 +56,86 @@ describe('SPV-DASH (forks & re-orgs)', () => {
   });
 
   it('add remaining test headers', () => {
-    chain.addHeaders(headers.slice(3, 25));
+    chain.addHeaders(headers.slice(3, 24));
     chain.getOrphans().length.should.equal(0);
     chain.getAllBranches().length.should.equal(1);
-    chain.getLongestChain().length.should.equal(26);
+    chain.getLongestChain().length.should.equal(25);
   });
 
   it('not add an invalid header', () => {
     chain.addHeader(headers[25]);
-    chain.getLongestChain().length.should.equal(26);
+    chain.getLongestChain().length.should.equal(25);
   });
 
   it('should throw an error if some of the headers is invalid', (done) => {
     try {
       chain.addHeaders([headers[25], headers[10]]);
+      done(new Error('SPV chain failed to throw an error on invalid block'));
+    } catch (e) {
+      e.message.should.equal('Some headers are invalid');
+      done();
+    }
+  });
+});
+
+describe('SPV-DASH (forks & re-orgs) serialized raw headers', () => {
+  before(() => {
+    chain = new Blockchain('test', 100, utils.normalizeHeader(mainnet[0]));
+  });
+
+  it('should get 2000 mainnet headers', () => {
+    mainnet.length.should.equal(2000);
+  });
+
+  it('should contain 1 branch when chain is initialised with genesis block', () => {
+    chain.getAllBranches().length.should.equal(1);
+  });
+
+  it('should contain start hash', () => {
+    chain.getTipHash().should.equal('000000000000002b8a8363ce87b4c48087ff8a997a8102097102bed001ebc531');
+    chain.getLongestChain().length.should.equal(1);
+  });
+
+  it('should still contain a branch of 1 when first header is added', () => {
+    chain.addHeader(mainnet[1]);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(2);
+  });
+
+  it('should discard addding of duplicate block', () => {
+    chain.addHeader(mainnet[1]);
+    chain.getOrphans().length.should.equal(0);
+    chain.getLongestChain().length.should.equal(2);
+  });
+
+  it('create 1 orphan', () => {
+    chain.addHeader(mainnet[3]);
+    chain.getOrphans().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(2);
+  });
+
+  it('connect the orphan by adding its parent', () => {
+    chain.addHeader(mainnet[2]);
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(4);
+  });
+
+  it('add remaining mainnet headers', () => {
+    chain.addHeaders(mainnet.slice(3, 1999));
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(24);
+  });
+
+  it('not add an invalid header', () => {
+    chain.addHeader(mainnet[499]);
+    chain.getLongestChain().length.should.equal(24);
+  });
+
+  it('should throw an error if some of the headers is invalid', (done) => {
+    try {
+      chain.addHeaders([badRawHeaders[0], badRawHeaders[1]]);
       done(new Error('SPV chain failed to throw an error on invalid block'));
     } catch (e) {
       e.message.should.equal('Some headers are invalid');
