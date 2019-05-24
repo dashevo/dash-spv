@@ -11,7 +11,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@dashevo/dark-gravity-wave": "git+https://git@github.com/dashevo/dark-gravity-wave-js#fix-allowMinDifficultyBlocks",
+    "@dashevo/dark-gravity-wave": "^1.1.1",
     "@dashevo/dashcore-lib": "^0.17.4",
     "@dashevo/dash-util": "^2.0.3",
     "bn.js": "^4.11.8",
