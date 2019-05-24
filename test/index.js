@@ -10,8 +10,6 @@ const headers = require('./data/headers');
 const merkleData = require('./data/merkleproofs');
 
 let chain = null;
-let chain2 = null;
-let chain3 = null;
 
 require('should');
 
@@ -145,33 +143,33 @@ describe('SPV-DASH (addHeaders) add many headers for testnet', () => {
   });
 
   it('should add the 1st 250 testnet2 headers', () => {
-    chain2 = new Blockchain('testnet', 10000, utils.normalizeHeader(testnet2[0]));
-    chain2.addHeaders(testnet2.slice(1, 250));
-    chain2.getOrphans().length.should.equal(0);
-    chain2.getAllBranches().length.should.equal(1);
-    chain2.getLongestChain().length.should.equal(250);
+    chain = new Blockchain('testnet', 10000, utils.normalizeHeader(testnet2[0]));
+    chain.addHeaders(testnet2.slice(1, 250));
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(250);
   });
 
   it('should add the next 250 (250 - 500) testnet2 headers', () => {
-    chain2.addHeaders(testnet2.slice(250, 500));
-    chain2.getOrphans().length.should.equal(0);
-    chain2.getAllBranches().length.should.equal(1);
-    chain2.getLongestChain().length.should.equal(500);
+    chain.addHeaders(testnet2.slice(250, 500));
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(500);
   });
 
   it('should add the 1st 250 testnet3 headers', () => {
-    chain3 = new Blockchain('testnet', 10000, utils.normalizeHeader(testnet3[0]));
-    chain3.addHeaders(testnet3.slice(1, 250));
-    chain3.getOrphans().length.should.equal(0);
-    chain3.getAllBranches().length.should.equal(1);
-    chain3.getLongestChain().length.should.equal(250);
+    chain = new Blockchain('testnet', 10000, utils.normalizeHeader(testnet3[0]));
+    chain.addHeaders(testnet3.slice(1, 250));
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(250);
   });
 
   it('should add the next 250 (250 - 500) testnet3 headers', () => {
-    chain3.addHeaders(testnet3.slice(250, 500));
-    chain3.getOrphans().length.should.equal(0);
-    chain3.getAllBranches().length.should.equal(1);
-    chain3.getLongestChain().length.should.equal(500);
+    chain.addHeaders(testnet3.slice(250, 500));
+    chain.getOrphans().length.should.equal(0);
+    chain.getAllBranches().length.should.equal(1);
+    chain.getLongestChain().length.should.equal(500);
   });
 
   it('should not add an invalid header', () => {
