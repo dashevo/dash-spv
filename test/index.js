@@ -229,7 +229,7 @@ describe('SPV-DASH (addHeaders) add many headers for mainnet', () => {
     }
   });
 });
-
+/*
 let genesisHash = null;
 describe('Blockstore', () => {
   before(() => {
@@ -259,7 +259,7 @@ describe('Blockstore', () => {
       });
   });
 });
-
+*/
 // TODO:
 // Create scenarios where chain splits occur to form competing brances
 // Difficult with current chain provided by chainmanager as this is actual hardcoded
