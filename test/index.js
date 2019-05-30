@@ -12,7 +12,7 @@ const merkleData = require('./data/merkleproofs');
 let chain = null;
 
 require('should');
-/*
+
 describe('SPV-DASH (forks & re-orgs) deserialized headers', () => {
   before(() => {
     chain = new Blockchain('devnet');
@@ -122,7 +122,7 @@ describe('SPV-DASH (forks & re-orgs) serialized raw headers for mainnet', () => 
     chain.getLongestChain().length.should.equal(4);
   });
 });
-*/
+
 describe('SPV-DASH (addHeaders) add many headers for testnet', () => {
   before(() => {
     chain = new Blockchain('testnet', 10000, utils.normalizeHeader(testnet[0]));
@@ -187,7 +187,7 @@ describe('SPV-DASH (addHeaders) add many headers for testnet', () => {
     }
   });
 });
-/*
+
 describe('SPV-DASH (addHeaders) add many headers for mainnet', () => {
   before(() => {
     chain = new Blockchain('mainnet', 10000, utils.normalizeHeader(mainnet[0]));
@@ -259,7 +259,7 @@ describe('Blockstore', () => {
       });
   });
 });
-*/
+
 // TODO:
 // Create scenarios where chain splits occur to form competing brances
 // Difficult with current chain provided by chainmanager as this is actual hardcoded
