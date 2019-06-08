@@ -365,8 +365,8 @@ describe('Blockstore', () => {
 });
 
 // TODO:
-// Create scenarios where chain splits occur to form competing brances
-// Difficult with current chain provided by chainmanager as this is actual hardcoded
+// Create scenarios where chain splits occur to form competing branches
+// Difficult with current chain provided by chainmanager as this is actually hardcoded
 // Dash testnet headers which requires significant CPU power to create forked chains from
 
 describe('MerkleProofs', () => {
