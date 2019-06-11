@@ -1,8 +1,8 @@
-const dashcore = require('@dashevo/dashcore-lib');
+const { MerkleBlock, Transaction } = require('@dashevo/dashcore-lib');
 const Blockchain = require('../lib/spvchain');
 const utils = require('../lib/utils');
 const merkleProofs = require('../lib/merkleproofs');
-
+const consensus = require('../lib/consensus');
 const {
   testnet, testnet2, testnet3, mainnet, badRawHeaders,
 } = require('./data/rawHeaders');
@@ -371,11 +371,103 @@ describe('Blockstore', () => {
 
 describe('MerkleProofs', () => {
   it('should validate tx inclusion in merkleblock', () => {
-    const merkleBlock = new dashcore.MerkleBlock(merkleData.merkleBlock);
-    const validTx = '45afbfe270014d5593cb065562f1fed726f767fe334d8b3f4379025cfa5be8c5';
+    const merkleBlock = new MerkleBlock(merkleData.merkleBlock);
+    const validTx = 'c5e85bfa5c0279433f8b4d33fe67f726d7fef1625506cb93554d0170e2bfaf45';
     const invalidTx = `${validTx.substring(0, validTx.length - 1)}0`;
 
     merkleProofs.validateTxProofs(merkleBlock, [validTx]).should.equal(true);
     merkleProofs.validateTxProofs(merkleBlock, [invalidTx]).should.equal(false);
+  });
+});
+
+describe('Transaction validation', () => {
+  before(() => {
+    chain = new Blockchain('testnet', 10000, utils.normalizeHeader(testnet[0]));
+    chain.addHeaders(testnet.slice(1, 500));
+  });
+
+  it('should throw an error if wrong type is passed', async () => {
+    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock, 'hex').toString('base64');
+    const validTx = '7262476912a96b9a6226cfa3a8f231ba3e2b1f75c396e88367e532c79c43c95b';
+    const invalid = Buffer.from(validTx);
+    try {
+      await consensus.isValidTransaction(invalid, merkleBlock, chain);
+      throw new Error('Transaction validation failed to throw an error');
+    } catch (e) {
+      e.message.should.equal('Please check type of transactions parameter');
+    }
+  });
+
+  it('should validate a raw tx', async () => {
+    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock, 'hex').toString('base64');
+    const validTx = new Transaction('020000000100de7192338db34fe9bb25f34122893d94f3b43bd4c881e37924c8e95a068cc8000000006b483045022100b185b4b86b613e3ffc796db90f95dc88f82561c50ba49fa610d8090f61f38ff002201473466bddee2672ed0dba75b81c07bdade734441e005c8c7fdf12a039ff9312012102bdfedbfe6ea05de8094d18442e08c98ebd695acf489f1bdf68fe1e3aff6f488effffffff010000000000000000016a00000000');
+    const invalidTx = '0062476912a96b9a6226cfa3a8f231ba3e2b1f75c396e88367e532c79c43c900';
+    const transactions = [];
+    transactions.push(validTx);
+    const invalid = [];
+    invalid.push(invalidTx);
+    const result = await consensus.isValidTransaction(transactions, merkleBlock, chain);
+    const result2 = await consensus.isValidTransaction(invalid, merkleBlock, chain);
+    chain.getLongestChain().length.should.equal(500);
+    result.should.equal(true);
+    result2.should.equal(false);
+  });
+
+  it('should validate a tx hash', async () => {
+    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock, 'hex').toString('base64');
+    const validTxHash = '7262476912a96b9a6226cfa3a8f231ba3e2b1f75c396e88367e532c79c43c95b';
+    const invalidTxHash = `${validTxHash.substring(0, validTxHash.length - 1)}0`;
+    const transactions = [];
+    transactions.push(validTxHash);
+    const invalid = [];
+    invalid.push(invalidTxHash);
+    const result = await consensus.isValidTransaction(transactions, merkleBlock, chain);
+    const result2 = await consensus.isValidTransaction(invalid, merkleBlock, chain);
+    result.should.equal(true);
+    result2.should.equal(false);
+  });
+
+  it('should not validate an array of raw transactions for a merkleblock that was generated with a filter containing only one of them', async () => {
+    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock, 'hex').toString('base64');
+    const validTx = new Transaction('020000000100de7192338db34fe9bb25f34122893d94f3b43bd4c881e37924c8e95a068cc8000000006b483045022100b185b4b86b613e3ffc796db90f95dc88f82561c50ba49fa610d8090f61f38ff002201473466bddee2672ed0dba75b81c07bdade734441e005c8c7fdf12a039ff9312012102bdfedbfe6ea05de8094d18442e08c98ebd695acf489f1bdf68fe1e3aff6f488effffffff010000000000000000016a00000000');
+    const validTx2 = new Transaction('0200000001ccc68ff58b7b02247f3e05440ab7fc7c8c599453de4a49e35393981890a1e984010000006b483045022100e141365c4916fa09d03aac58f215b926b777a3acec918a6becdbb03d59d28d9f02204edc1ce68d596e28e55f114c67a270302d488707e754af1261fdfc043891651c012102d5b7c0dfb2fd9591a4a98555ce806e17842f401979f2e0cc0689c91d6ca9ef87feffffff025d4c0000000000001976a9146d14b25994e4036d70eeafd4a706640337db5a5e88ac409c0000000000001976a9148b4a9da5a46c7b89b26b649bac8e34e7aa5aa63188acc2260000');
+    const transactions = [];
+    transactions.push(validTx);
+    transactions.push(validTx2);
+    const result = await consensus.isValidTransaction(transactions, merkleBlock, chain);
+    result.should.equal(false);
+  });
+
+  it('should validate an array of raw transactions for a merkleblock that was generated with a filter containing both of them', async () => {
+    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock2, 'hex').toString('base64');
+    const validTx = new Transaction('020000000100de7192338db34fe9bb25f34122893d94f3b43bd4c881e37924c8e95a068cc8000000006b483045022100b185b4b86b613e3ffc796db90f95dc88f82561c50ba49fa610d8090f61f38ff002201473466bddee2672ed0dba75b81c07bdade734441e005c8c7fdf12a039ff9312012102bdfedbfe6ea05de8094d18442e08c98ebd695acf489f1bdf68fe1e3aff6f488effffffff010000000000000000016a00000000');
+    const validTx2 = new Transaction('0200000001ccc68ff58b7b02247f3e05440ab7fc7c8c599453de4a49e35393981890a1e984010000006b483045022100e141365c4916fa09d03aac58f215b926b777a3acec918a6becdbb03d59d28d9f02204edc1ce68d596e28e55f114c67a270302d488707e754af1261fdfc043891651c012102d5b7c0dfb2fd9591a4a98555ce806e17842f401979f2e0cc0689c91d6ca9ef87feffffff025d4c0000000000001976a9146d14b25994e4036d70eeafd4a706640337db5a5e88ac409c0000000000001976a9148b4a9da5a46c7b89b26b649bac8e34e7aa5aa63188acc2260000');
+    const transactions = [];
+    transactions.push(validTx);
+    transactions.push(validTx2);
+    const result = await consensus.isValidTransaction(transactions, merkleBlock, chain);
+    result.should.equal(true);
+  });
+
+  it('should not validate an array of transactions hashes for a merkleblock that was generated with a filter containing only one of them', async () => {
+    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock, 'hex').toString('base64');
+    const validTxHash = '7262476912a96b9a6226cfa3a8f231ba3e2b1f75c396e88367e532c79c43c95b';
+    const validTxHash2 = '3f3517ee8fa95621fe8abdd81c1e0dfb50e21dd4c5a3c01eee2c47cf664821b6';
+    const transactions = [];
+    transactions.push(validTxHash);
+    transactions.push(validTxHash2);
+    const result = await consensus.isValidTransaction(transactions, merkleBlock, chain);
+    result.should.equal(false);
+  });
+
+  it('should validate an array of transactions hashes for a merkleblock that was generated with a filter containing both of them', async () => {
+    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock2, 'hex').toString('base64');
+    const validTxHash = '7262476912a96b9a6226cfa3a8f231ba3e2b1f75c396e88367e532c79c43c95b';
+    const validTxHash2 = '3f3517ee8fa95621fe8abdd81c1e0dfb50e21dd4c5a3c01eee2c47cf664821b6';
+    const transactions = [];
+    transactions.push(validTxHash);
+    transactions.push(validTxHash2);
+    const result = await consensus.isValidTransaction(transactions, merkleBlock, chain);
+    result.should.equal(true);
   });
 });
