@@ -399,7 +399,7 @@ describe('Transaction validation', () => {
   });
 
   it('should not validate an array of raw transactions for a merkleblock that was generated with a filter containing only one of them', async () => {
-    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock, 'hex').toString('base64');
+    const merkleBlock = new MerkleBlock(Buffer.from(merkleData.rawMerkleBlock, 'hex'));
     const validTx = new Transaction('020000000100de7192338db34fe9bb25f34122893d94f3b43bd4c881e37924c8e95a068cc8000000006b483045022100b185b4b86b613e3ffc796db90f95dc88f82561c50ba49fa610d8090f61f38ff002201473466bddee2672ed0dba75b81c07bdade734441e005c8c7fdf12a039ff9312012102bdfedbfe6ea05de8094d18442e08c98ebd695acf489f1bdf68fe1e3aff6f488effffffff010000000000000000016a00000000');
     const validTx2 = new Transaction('0200000001ccc68ff58b7b02247f3e05440ab7fc7c8c599453de4a49e35393981890a1e984010000006b483045022100e141365c4916fa09d03aac58f215b926b777a3acec918a6becdbb03d59d28d9f02204edc1ce68d596e28e55f114c67a270302d488707e754af1261fdfc043891651c012102d5b7c0dfb2fd9591a4a98555ce806e17842f401979f2e0cc0689c91d6ca9ef87feffffff025d4c0000000000001976a9146d14b25994e4036d70eeafd4a706640337db5a5e88ac409c0000000000001976a9148b4a9da5a46c7b89b26b649bac8e34e7aa5aa63188acc2260000');
     const transactions = [];
@@ -410,7 +410,7 @@ describe('Transaction validation', () => {
   });
 
   it('should validate an array of raw transactions for a merkleblock that was generated with a filter containing both of them', async () => {
-    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock2, 'hex').toString('base64');
+    const merkleBlock = new MerkleBlock(Buffer.from(merkleData.rawMerkleBlock2, 'hex'));
     const validTx = new Transaction('020000000100de7192338db34fe9bb25f34122893d94f3b43bd4c881e37924c8e95a068cc8000000006b483045022100b185b4b86b613e3ffc796db90f95dc88f82561c50ba49fa610d8090f61f38ff002201473466bddee2672ed0dba75b81c07bdade734441e005c8c7fdf12a039ff9312012102bdfedbfe6ea05de8094d18442e08c98ebd695acf489f1bdf68fe1e3aff6f488effffffff010000000000000000016a00000000');
     const validTx2 = new Transaction('0200000001ccc68ff58b7b02247f3e05440ab7fc7c8c599453de4a49e35393981890a1e984010000006b483045022100e141365c4916fa09d03aac58f215b926b777a3acec918a6becdbb03d59d28d9f02204edc1ce68d596e28e55f114c67a270302d488707e754af1261fdfc043891651c012102d5b7c0dfb2fd9591a4a98555ce806e17842f401979f2e0cc0689c91d6ca9ef87feffffff025d4c0000000000001976a9146d14b25994e4036d70eeafd4a706640337db5a5e88ac409c0000000000001976a9148b4a9da5a46c7b89b26b649bac8e34e7aa5aa63188acc2260000');
     const transactions = [];
@@ -421,7 +421,7 @@ describe('Transaction validation', () => {
   });
 
   it('should not validate an array of transactions hashes for a merkleblock that was generated with a filter containing only one of them', async () => {
-    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock, 'hex').toString('base64');
+    const merkleBlock = new MerkleBlock(Buffer.from(merkleData.rawMerkleBlock, 'hex'));
     const validTxHash = '7262476912a96b9a6226cfa3a8f231ba3e2b1f75c396e88367e532c79c43c95b';
     const validTxHash2 = '3f3517ee8fa95621fe8abdd81c1e0dfb50e21dd4c5a3c01eee2c47cf664821b6';
     const transactions = [];
@@ -432,7 +432,7 @@ describe('Transaction validation', () => {
   });
 
   it('should validate an array of transactions hashes for a merkleblock that was generated with a filter containing both of them', async () => {
-    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock2, 'hex').toString('base64');
+    const merkleBlock = new MerkleBlock(Buffer.from(merkleData.rawMerkleBlock2, 'hex'));
     const validTxHash = '7262476912a96b9a6226cfa3a8f231ba3e2b1f75c396e88367e532c79c43c95b';
     const validTxHash2 = '3f3517ee8fa95621fe8abdd81c1e0dfb50e21dd4c5a3c01eee2c47cf664821b6';
     const transactions = [];
