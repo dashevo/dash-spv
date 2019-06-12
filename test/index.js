@@ -391,7 +391,7 @@ describe('Transaction validation', () => {
     const validTx = '7262476912a96b9a6226cfa3a8f231ba3e2b1f75c396e88367e532c79c43c95b';
     const invalid = Buffer.from(validTx);
     try {
-      await consensus.isValidTransaction(invalid, merkleBlock, chain);
+      await consensus.areValidTransactions(invalid, merkleBlock, chain);
       throw new Error('Transaction validation failed to throw an error');
     } catch (e) {
       e.message.should.equal('Please check type of transactions parameter');
@@ -406,8 +406,8 @@ describe('Transaction validation', () => {
     transactions.push(validTx);
     const invalid = [];
     invalid.push(invalidTx);
-    const result = await consensus.isValidTransaction(transactions, merkleBlock, chain);
-    const result2 = await consensus.isValidTransaction(invalid, merkleBlock, chain);
+    const result = await consensus.areValidTransactions(transactions, merkleBlock, chain);
+    const result2 = await consensus.areValidTransactions(invalid, merkleBlock, chain);
     chain.getLongestChain().length.should.equal(500);
     result.should.equal(true);
     result2.should.equal(false);
@@ -421,8 +421,8 @@ describe('Transaction validation', () => {
     transactions.push(validTxHash);
     const invalid = [];
     invalid.push(invalidTxHash);
-    const result = await consensus.isValidTransaction(transactions, merkleBlock, chain);
-    const result2 = await consensus.isValidTransaction(invalid, merkleBlock, chain);
+    const result = await consensus.areValidTransactions(transactions, merkleBlock, chain);
+    const result2 = await consensus.areValidTransactions(invalid, merkleBlock, chain);
     result.should.equal(true);
     result2.should.equal(false);
   });
@@ -434,7 +434,7 @@ describe('Transaction validation', () => {
     const transactions = [];
     transactions.push(validTx);
     transactions.push(validTx2);
-    const result = await consensus.isValidTransaction(transactions, merkleBlock, chain);
+    const result = await consensus.areValidTransactions(transactions, merkleBlock, chain);
     result.should.equal(false);
   });
 
@@ -445,7 +445,7 @@ describe('Transaction validation', () => {
     const transactions = [];
     transactions.push(validTx);
     transactions.push(validTx2);
-    const result = await consensus.isValidTransaction(transactions, merkleBlock, chain);
+    const result = await consensus.areValidTransactions(transactions, merkleBlock, chain);
     result.should.equal(true);
   });
 
@@ -456,7 +456,7 @@ describe('Transaction validation', () => {
     const transactions = [];
     transactions.push(validTxHash);
     transactions.push(validTxHash2);
-    const result = await consensus.isValidTransaction(transactions, merkleBlock, chain);
+    const result = await consensus.areValidTransactions(transactions, merkleBlock, chain);
     result.should.equal(false);
   });
 
@@ -467,7 +467,7 @@ describe('Transaction validation', () => {
     const transactions = [];
     transactions.push(validTxHash);
     transactions.push(validTxHash2);
-    const result = await consensus.isValidTransaction(transactions, merkleBlock, chain);
+    const result = await consensus.areValidTransactions(transactions, merkleBlock, chain);
     result.should.equal(true);
   });
 });
