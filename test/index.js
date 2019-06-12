@@ -385,6 +385,9 @@ describe('Transaction validation', () => {
   before(() => {
     chain = new Blockchain('testnet', 10000, utils.normalizeHeader(testnet[0]));
     chain.addHeaders(testnet.slice(1, 500));
+  });
+
+  beforeEach(() => {
     merkleBlock = new MerkleBlock(Buffer.from(merkleData.rawMerkleBlock, 'hex'));
     merkleBlock2 = new MerkleBlock(Buffer.from(merkleData.rawMerkleBlock2, 'hex'));
   });
