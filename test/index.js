@@ -398,35 +398,6 @@ describe('Transaction validation', () => {
     }
   });
 
-  it('should validate a raw tx', async () => {
-    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock, 'hex').toString('base64');
-    const validTx = new Transaction('020000000100de7192338db34fe9bb25f34122893d94f3b43bd4c881e37924c8e95a068cc8000000006b483045022100b185b4b86b613e3ffc796db90f95dc88f82561c50ba49fa610d8090f61f38ff002201473466bddee2672ed0dba75b81c07bdade734441e005c8c7fdf12a039ff9312012102bdfedbfe6ea05de8094d18442e08c98ebd695acf489f1bdf68fe1e3aff6f488effffffff010000000000000000016a00000000');
-    const invalidTx = '0062476912a96b9a6226cfa3a8f231ba3e2b1f75c396e88367e532c79c43c900';
-    const transactions = [];
-    transactions.push(validTx);
-    const invalid = [];
-    invalid.push(invalidTx);
-    const result = await consensus.areValidTransactions(transactions, merkleBlock, chain);
-    const result2 = await consensus.areValidTransactions(invalid, merkleBlock, chain);
-    chain.getLongestChain().length.should.equal(500);
-    result.should.equal(true);
-    result2.should.equal(false);
-  });
-
-  it('should validate a tx hash', async () => {
-    const merkleBlock = Buffer.from(merkleData.rawMerkleBlock, 'hex').toString('base64');
-    const validTxHash = '7262476912a96b9a6226cfa3a8f231ba3e2b1f75c396e88367e532c79c43c95b';
-    const invalidTxHash = `${validTxHash.substring(0, validTxHash.length - 1)}0`;
-    const transactions = [];
-    transactions.push(validTxHash);
-    const invalid = [];
-    invalid.push(invalidTxHash);
-    const result = await consensus.areValidTransactions(transactions, merkleBlock, chain);
-    const result2 = await consensus.areValidTransactions(invalid, merkleBlock, chain);
-    result.should.equal(true);
-    result2.should.equal(false);
-  });
-
   it('should not validate an array of raw transactions for a merkleblock that was generated with a filter containing only one of them', async () => {
     const merkleBlock = Buffer.from(merkleData.rawMerkleBlock, 'hex').toString('base64');
     const validTx = new Transaction('020000000100de7192338db34fe9bb25f34122893d94f3b43bd4c881e37924c8e95a068cc8000000006b483045022100b185b4b86b613e3ffc796db90f95dc88f82561c50ba49fa610d8090f61f38ff002201473466bddee2672ed0dba75b81c07bdade734441e005c8c7fdf12a039ff9312012102bdfedbfe6ea05de8094d18442e08c98ebd695acf489f1bdf68fe1e3aff6f488effffffff010000000000000000016a00000000');
