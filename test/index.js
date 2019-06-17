@@ -399,7 +399,17 @@ describe('Transaction validation', () => {
       await consensus.areValidTransactions(invalid, merkleBlock, chain);
       throw new Error('Transaction validation failed to throw an error');
     } catch (e) {
-      e.message.should.equal('Please check type of transactions parameter');
+      e.message.should.equal('Please check that transactions parameter is a non-empty array');
+    }
+  });
+
+  it('should throw an error if empty transactions array', async () => {
+    const transactions = [];
+    try {
+      await consensus.areValidTransactions(transactions, merkleBlock, chain);
+      throw new Error('Transaction validation failed to throw an error');
+    } catch (e) {
+      e.message.should.equal('Please check that transactions parameter is a non-empty array');
     }
   });
 
