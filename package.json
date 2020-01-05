@@ -14,7 +14,6 @@
     "@dashevo/dark-gravity-wave": "^1.1.1",
     "@dashevo/dashcore-lib": "^0.17.4",
     "levelup": "^4.0.1",
-    "bn.js": "^4.11.8",
     "memdown": "^3.0.0"
   },
   "devDependencies": {
