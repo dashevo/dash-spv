@@ -12,7 +12,7 @@ on:
 
 jobs:
   test:
-    name: Run Dark Gravity Wave tests
+    name: Run Dash SPV tests
     runs-on: ubuntu-20.04
     timeout-minutes: 10
     steps:
