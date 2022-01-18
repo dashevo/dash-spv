@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "@dashevo/dark-gravity-wave": "^1.1.1",
-    "@dashevo/dashcore-lib": "^0.17.4",
+    "@dashevo/dashcore-lib": "^0.19.28",
     "@dashevo/dash-util": "^2.0.3",
     "levelup": "^4.0.1",
     "memdown": "^3.0.0"
