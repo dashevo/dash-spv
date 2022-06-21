@@ -13,7 +13,7 @@
   "dependencies": {
     "@dashevo/dark-gravity-wave": "^1.1.1",
     "@dashevo/dash-util": "^2.0.3",
-    "@dashevo/dashcore-lib": "^0.19.29",
+    "@dashevo/dashcore-lib": "^0.19.39",
     "levelup": "^4.0.1",
     "memdown": "^3.0.0"
   },
@@ -23,5 +23,8 @@
     "eslint-plugin-import": "^2.17.3",
     "mocha": "^5.2.0",
     "should": "^13.2.3"
+  },
+  "peerDependencies": {
+    "@dashevo/dashcore-lib": "^0.19.39"
   }
 }
