@@ -1,8 +1,6 @@
-# dash-spv
+# dash-spv (DEPRECATED)
 
-Temporary repo until spv functions moved into dashcore-lib
-
-No new features should be added to this repo.
+Moved to the https://github.com/dashevo/platform
 
 ## License
 
